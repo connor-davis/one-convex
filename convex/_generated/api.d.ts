@@ -8,13 +8,23 @@
  * @module
  */
 
+import type * as badges_badgeCategories from "../badges/badgeCategories.js";
+import type * as badges_badges from "../badges/badges.js";
+import type * as schemas_badgeCategories from "../schemas/badgeCategories.js";
+import type * as schemas_badges from "../schemas/badges.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  "badges/badgeCategories": typeof badges_badgeCategories;
+  "badges/badges": typeof badges_badges;
+  "schemas/badgeCategories": typeof schemas_badgeCategories;
+  "schemas/badges": typeof schemas_badges;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.

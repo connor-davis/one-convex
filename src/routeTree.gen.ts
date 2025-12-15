@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BadgesIndexRouteImport } from './routes/badges/index'
+import { Route as BadgesCreateRouteImport } from './routes/badges/create'
+import { Route as BadgesIdIndexRouteImport } from './routes/badges/$id/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BadgesIndexRoute = BadgesIndexRouteImport.update({
+  id: '/badges/',
+  path: '/badges/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BadgesCreateRoute = BadgesCreateRouteImport.update({
+  id: '/badges/create',
+  path: '/badges/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BadgesIdIndexRoute = BadgesIdIndexRouteImport.update({
+  id: '/badges/$id/',
+  path: '/badges/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/badges/create': typeof BadgesCreateRoute
+  '/badges': typeof BadgesIndexRoute
+  '/badges/$id': typeof BadgesIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/badges/create': typeof BadgesCreateRoute
+  '/badges': typeof BadgesIndexRoute
+  '/badges/$id': typeof BadgesIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/badges/create': typeof BadgesCreateRoute
+  '/badges/': typeof BadgesIndexRoute
+  '/badges/$id/': typeof BadgesIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/badges/create' | '/badges' | '/badges/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/badges/create' | '/badges' | '/badges/$id'
+  id: '__root__' | '/' | '/badges/create' | '/badges/' | '/badges/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BadgesCreateRoute: typeof BadgesCreateRoute
+  BadgesIndexRoute: typeof BadgesIndexRoute
+  BadgesIdIndexRoute: typeof BadgesIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/badges/': {
+      id: '/badges/'
+      path: '/badges'
+      fullPath: '/badges'
+      preLoaderRoute: typeof BadgesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/badges/create': {
+      id: '/badges/create'
+      path: '/badges/create'
+      fullPath: '/badges/create'
+      preLoaderRoute: typeof BadgesCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/badges/$id/': {
+      id: '/badges/$id/'
+      path: '/badges/$id'
+      fullPath: '/badges/$id'
+      preLoaderRoute: typeof BadgesIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BadgesCreateRoute: BadgesCreateRoute,
+  BadgesIndexRoute: BadgesIndexRoute,
+  BadgesIdIndexRoute: BadgesIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

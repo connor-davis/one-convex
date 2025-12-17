@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useAuth } from "@workos-inc/authkit-react";
 import { BadgeIcon, ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -20,7 +21,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../ui/sidebar";
-import { Link } from "@tanstack/react-router";
 
 export default function AppSidebar() {
   const { user, signOut } = useAuth();
@@ -33,6 +33,15 @@ export default function AppSidebar() {
           <SidebarGroupLabel>Rewards</SidebarGroupLabel>
 
           <SidebarMenu>
+            <SidebarMenuItem>
+              <Link to="/available-badges">
+                <SidebarMenuButton>
+                  <BadgeIcon />
+                  <span>Available Badges</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+
             <SidebarMenuItem>
               <Link to="/badges">
                 <SidebarMenuButton>

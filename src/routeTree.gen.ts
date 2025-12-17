@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BadgesIndexRouteImport } from './routes/badges/index'
+import { Route as AvailableBadgesIndexRouteImport } from './routes/available-badges/index'
 import { Route as BadgesCreateRouteImport } from './routes/badges/create'
 import { Route as BadgesIdIndexRouteImport } from './routes/badges/$id/index'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const BadgesIndexRoute = BadgesIndexRouteImport.update({
   id: '/badges/',
   path: '/badges/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvailableBadgesIndexRoute = AvailableBadgesIndexRouteImport.update({
+  id: '/available-badges/',
+  path: '/available-badges/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BadgesCreateRoute = BadgesCreateRouteImport.update({
@@ -38,12 +44,14 @@ const BadgesIdIndexRoute = BadgesIdIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/badges/create': typeof BadgesCreateRoute
+  '/available-badges': typeof AvailableBadgesIndexRoute
   '/badges': typeof BadgesIndexRoute
   '/badges/$id': typeof BadgesIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/badges/create': typeof BadgesCreateRoute
+  '/available-badges': typeof AvailableBadgesIndexRoute
   '/badges': typeof BadgesIndexRoute
   '/badges/$id': typeof BadgesIdIndexRoute
 }
@@ -51,20 +59,33 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/badges/create': typeof BadgesCreateRoute
+  '/available-badges/': typeof AvailableBadgesIndexRoute
   '/badges/': typeof BadgesIndexRoute
   '/badges/$id/': typeof BadgesIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/badges/create' | '/badges' | '/badges/$id'
+  fullPaths:
+    | '/'
+    | '/badges/create'
+    | '/available-badges'
+    | '/badges'
+    | '/badges/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/badges/create' | '/badges' | '/badges/$id'
-  id: '__root__' | '/' | '/badges/create' | '/badges/' | '/badges/$id/'
+  to: '/' | '/badges/create' | '/available-badges' | '/badges' | '/badges/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/badges/create'
+    | '/available-badges/'
+    | '/badges/'
+    | '/badges/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BadgesCreateRoute: typeof BadgesCreateRoute
+  AvailableBadgesIndexRoute: typeof AvailableBadgesIndexRoute
   BadgesIndexRoute: typeof BadgesIndexRoute
   BadgesIdIndexRoute: typeof BadgesIdIndexRoute
 }
@@ -83,6 +104,13 @@ declare module '@tanstack/react-router' {
       path: '/badges'
       fullPath: '/badges'
       preLoaderRoute: typeof BadgesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/available-badges/': {
+      id: '/available-badges/'
+      path: '/available-badges'
+      fullPath: '/available-badges'
+      preLoaderRoute: typeof AvailableBadgesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/badges/create': {
@@ -105,6 +133,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BadgesCreateRoute: BadgesCreateRoute,
+  AvailableBadgesIndexRoute: AvailableBadgesIndexRoute,
   BadgesIndexRoute: BadgesIndexRoute,
   BadgesIdIndexRoute: BadgesIdIndexRoute,
 }

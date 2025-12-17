@@ -1,6 +1,37 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { Doc, Id } from "../_generated/dataModel";
 import { mutation, query } from "../_generated/server";
+
+export const getAvailableBadges = query({
+  handler: async (ctx) => {
+    const badgeCategories = await ctx.db.query("badgeCategories").collect();
+
+    const badgesByCategory: Record<string, Doc<"badges">[]> = {};
+
+    for (const badgeCategory of badgeCategories) {
+      const badges = await ctx.db
+        .query("badges")
+        .filter((q) => q.eq(q.field("categoryId"), badgeCategory._id))
+        .collect();
+
+      if (badges.length > 0) {
+        badgesByCategory[badgeCategory.name] = badges;
+      }
+    }
+
+    const uncategorizedBadges = await ctx.db
+      .query("badges")
+      .filter((q) => q.eq(q.field("categoryId"), null))
+      .collect();
+
+    if (uncategorizedBadges.length > 0) {
+      badgesByCategory["Other"] = uncategorizedBadges;
+    }
+
+    return badgesByCategory;
+  },
+});
 
 export const get = query({
   args: {
@@ -44,11 +75,11 @@ export const getOne = query({
 
 export const create = mutation({
   args: {
-    imageId: v.string(),
+    imageId: v.optional(v.union(v.id("_storage"), v.null())),
     name: v.string(),
     description: v.string(),
     points: v.number(),
-    categoryId: v.optional(v.id("badgeCategories")),
+    categoryId: v.optional(v.union(v.id("badgeCategories"), v.null())),
     organizationId: v.nullable(v.string()),
   },
   handler: async (ctx, { ...payload }) => {
@@ -67,11 +98,11 @@ export const create = mutation({
 export const update = mutation({
   args: {
     id: v.id("badges"),
-    imageId: v.optional(v.string()),
+    imageId: v.optional(v.union(v.id("_storage"), v.null())),
     name: v.optional(v.string()),
     description: v.optional(v.string()),
     points: v.optional(v.number()),
-    categoryId: v.optional(v.id("badgeCategories")),
+    categoryId: v.optional(v.union(v.id("badgeCategories"), v.null())),
   },
   handler: async (ctx, { id, ...payload }) => {
     await ctx.db.patch(id, payload);
